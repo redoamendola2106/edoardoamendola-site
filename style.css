@@ -242,6 +242,9 @@ button { font: inherit; }
 .audio-placeholder > span { font-family: sans-serif; font-size: 1.2rem; }
 .audio-placeholder > div { display: flex; flex-direction: column; }
 .contact-link { color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.45); }
+.recording { margin: 1.4rem 0; }
+.recording .rec-title { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.15rem; margin: 0 0 .5rem; }
+.recording iframe { display: block; border-radius: 2px; filter: saturate(.15) brightness(1.05); }
 code { font-size: .85em; }
 
 @media (max-width: 1050px) {
