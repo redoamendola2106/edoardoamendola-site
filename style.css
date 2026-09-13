@@ -139,8 +139,8 @@ button { font: inherit; }
   .hero-bg {
     background-image: url("assets/collage.png?v=5");
     background-position: center 20%;
-    filter: blur(75px) grayscale(75%) brightness(.6) contrast(.95);
-    opacity: .92;
+    filter: blur(38px) grayscale(65%) brightness(.75) contrast(1.05);
+    opacity: 1;
   }
 }
 .hero-shade {
