@@ -131,6 +131,18 @@ button { font: inherit; }
   -webkit-mask-image: radial-gradient(ellipse 80% 85% at 50% 42%, black 85%, transparent 100%);
   mask-image: radial-gradient(ellipse 80% 85% at 50% 42%, black 85%, transparent 100%);
 }
+/* On wide screens the empty sides beside the portrait hero photo are filled
+   with a soft, misty blur of the collage photos instead of a repeat of the
+   hero image itself -- a nod to what's behind the menu. Mobile is untouched
+   since the hero already fills the screen edge to edge there. */
+@media (min-width: 821px) {
+  .hero-bg {
+    background-image: url("assets/collage.png?v=5");
+    background-position: center 20%;
+    filter: blur(75px) grayscale(75%) brightness(.6) contrast(.95);
+    opacity: .92;
+  }
+}
 .hero-shade {
   position: absolute;
   inset: 0;
