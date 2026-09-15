@@ -37,7 +37,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&amp;family=Montserrat:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
-<link href="style.css?v=18" rel="stylesheet">
+<link href="style.css?v=20" rel="stylesheet">
 </link></head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -64,12 +64,59 @@
 </header>
 <main>
 <section aria-label="Home" class="hero view active" id="home">
+<div class="hero-stage" id="heroStage">
 <div class="hero-bg" aria-hidden="true"></div>
 <picture>
 <source media="(min-width: 821px)" srcset="assets/hero-desktop.png?v=3"/>
 <img alt="Edoardo Amendola playing piano" class="hero-image" src="assets/hero-mobile.png?v=1"/>
 </picture>
 <div class="hero-fade-bottom" aria-hidden="true"></div>
+
+<!-- Real DOM poetry; only the current movement is exposed to assistive technology. -->
+<div class="scroll-story" id="scrollStory">
+<div class="story-movement story-movement--silence" data-movement="silence">
+<p class="story-label"><span class="story-dynamic">ppp</span><span data-i18n="story.silenceLabel">I &mdash; SILENCE</span></p>
+<p class="story-text" data-i18n="story.silenceText">Every note begins in silence.</p>
+</div>
+<div class="story-movement story-movement--listening" data-movement="listening">
+<p class="story-label"><span class="story-dynamic">p</span><span data-i18n="story.listeningLabel">II &mdash; LISTENING</span></p>
+<p class="story-text" data-i18n="story.listeningText">Before the first note, there is listening.</p>
+</div>
+<div class="story-movement story-movement--breath" data-movement="breath">
+<div class="story-staff" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+<p class="story-label"><span class="story-dynamic">mp</span><span data-i18n="story.breathLabel">III &mdash; BREATH</span></p>
+<p class="story-text" data-i18n="story.breathText">Music lives in the breath between two notes.</p>
+</div>
+<div class="story-movement story-movement--rubato" data-movement="rubato">
+<p class="story-label"><span class="story-dynamic">mf</span><span data-i18n="story.rubatoLabel">RUBATO</span></p>
+<p class="story-text story-text--rubato" data-i18n="story.rubatoText">Time bends.<br>Music remains.</p>
+</div>
+<div class="story-movement story-movement--cantabile" data-movement="cantabile">
+<p class="story-label"><span class="story-dynamic">p</span><span class="story-label-spread" data-i18n="story.cantabileLabel">CANTABILE</span></p>
+<p class="story-text" data-i18n="story.cantabileText">Let the piano sing.</p>
+</div>
+<div class="story-movement story-movement--resonance" data-movement="resonance">
+<p class="story-label"><span class="story-dynamic">pp</span><span data-i18n="story.resonanceLabel">RESONANCE</span></p>
+<p class="story-text story-text--resonance-1" data-i18n="story.resonanceText1">The sound fades.</p>
+<p class="story-text story-text--resonance-2" data-i18n="story.resonanceText2">What it touched remains.</p>
+</div>
+<div class="story-movement story-movement--dacapo" data-movement="dacapo">
+<p class="story-label"><span class="story-dynamic">ppp</span><span data-i18n="story.dacapoLabel">DA CAPO</span></p>
+<p class="story-text" data-i18n="story.dacapoText">Return.<br>Listen differently.</p>
+</div>
+</div>
+
+<div class="scroll-cue" id="scrollCue" aria-hidden="true">
+<span class="scroll-cue-label" data-i18n="home.scroll">SCROLL</span>
+<span class="scroll-line"></span>
+</div>
+
+<button aria-label="Toggle ambient piano sound" aria-pressed="false" class="sound-toggle" hidden id="soundToggle" type="button">
+<span aria-hidden="true" class="sound-toggle-icon">&#9834;</span>
+<span class="sound-toggle-label" data-i18n="story.soundOff" id="soundToggleLabel">SOUND</span>
+</button>
+</div>
+<div aria-hidden="true" class="story-spacer" id="storySpacer"></div>
 </section>
 <section aria-live="polite" class="content-view view" id="contentView">
 <div aria-hidden="true" class="tile-reveal" id="tileReveal"></div>
@@ -85,6 +132,7 @@
 </article>
 </section>
 </main>
-<script src="script.js?v=3"></script>
+<script src="story-audio.js?v=1"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>

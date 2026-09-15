@@ -34,4 +34,63 @@ To add real audio later, replace the placeholder inside the `recordings` section
 
 ## Notes on the images
 
-`hero.png` and `collage.png` are used as full design artwork (they already contain the large title/quote typography). The site displays `hero.png` in full (no cropping) on desktop, and crops in to frame Edoardo on narrow/mobile screens. If you ever swap in a new hero photo, keep it free of any baked-in navigation/menu text — the live header above it already provides the nav, in all 3 languages.
+The existing `<picture>` uses `hero-desktop.png` above 820px and
+`hero-mobile.png` on narrower screens. Both use the existing `object-fit: contain`
+and `object-position: center top`. These images include the signature and quote.
+All supplied image files are unchanged.
+
+## Scroll storytelling
+
+The homepage uses its existing hero as a native sticky stage, with a total height
+of 600svh on desktop and 500svh on mobile. There is no extra hero image or new
+framework. The seven movements use the supplied 12–100% timeline; the beginning
+and end are clear. Navigation still opens the existing content panels.
+
+`script.js` contains `STORY_MOVEMENTS`, the existing `copy` translations, and
+shared animation/audio functions. Resize events cache the scroll geometry.
+Scroll frames update opacity and transforms, with small letter-spacing changes
+for Rubato and Resonance. Inactive movements are hidden visually and from the
+accessibility tree. Reduced motion removes movement and retains the text sequence.
+
+### Optional sound
+
+No local piano recordings were supplied. The sound control stays hidden until
+at least one recording is configured; it never indicates that missing audio is
+playing. Existing SoundCloud embeds in Recordings are unchanged.
+
+1. Put actual recordings in `assets/audio/`.
+2. In `story-audio.js`, replace the relevant `null` values with the commented
+   relative paths. Leave `silence` null. Da Capo can reuse `listening.mp3`.
+3. Reload the page. The localized, keyboard-accessible sound toggle appears
+   after the introduction and starts OFF. Only clicking it enables playback.
+
+Playback occurs once per movement entry, with a six-second replay guard against
+boundary jitter. Moving out of a movement fades its sound. Navigation away,
+hiding the tab, and page exit stop playback and reset sound to OFF. Failed
+playback also resets the toggle. There are no generated or external audio files.
+
+### Verification
+
+From this directory, run with Node.js:
+
+```sh
+node --check script.js
+node tests/controller.cjs
+node tests/regression.cjs
+```
+
+The controller tests execute the actual script with lightweight DOM and audio
+adapters. They cover 1,001 scroll positions, reverse-scroll determinism, EN/IT/TR,
+reduced-motion behavior, all five content panels, and audio opt-in, threshold
+jitter, navigation and visibility cleanup. They are logic tests, not a rendering
+engine or an audio listening test. The regression test verifies restrained
+Resonance spacing and the longer-lasting second sentence.
+
+Browser visual QA remains necessary: the available preview browser could not
+access the local server. Before publishing, compare the starting viewport with
+the original, and check all seven movements at desktop, tablet, portrait phone,
+and landscape phone sizes. Check text against face, hands, signature, sheet music
+and keyboard, then repeat in Italian and Turkish. Test actual Safari/iOS toolbar
+resizing, menu/language clicks, reverse scroll, reduced motion, horizontal
+clipping, and clean end-of-sequence release. Real audio needs a listening test
+once recordings are supplied. No public deployment was performed.
