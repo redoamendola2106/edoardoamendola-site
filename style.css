@@ -156,6 +156,21 @@ button { font: inherit; }
   background: linear-gradient(90deg, rgba(0,0,0,.27) 0%, rgba(0,0,0,.04) 45%, rgba(0,0,0,.12) 100%);
   pointer-events: none;
 }
+/* A guaranteed-smooth fade to the page background at the very bottom of the
+   hero, regardless of exactly where the contained photo's own edge lands
+   (which shifts with each image's aspect ratio and is not something a mask
+   tied to the box -- rather than the photo's actual rendered content -- can
+   track). This removes the hard seam a mask-only approach left behind. */
+.hero-fade-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, #0a0908 75%);
+  pointer-events: none;
+  z-index: 2;
+}
 
 .content-view {
   display: none;
