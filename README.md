@@ -52,22 +52,39 @@ Scroll frames update opacity and transforms, with small letter-spacing changes
 for Rubato and Resonance. Inactive movements are hidden visually and from the
 accessibility tree. Reduced motion removes movement and retains the text sequence.
 
-### Optional sound
+### Mobile placement
 
-No local piano recordings were supplied. The sound control stays hidden until
-at least one recording is configured; it never indicates that missing audio is
-playing. Existing SoundCloud embeds in Recordings are unchanged.
+On screens up to 820px, all movements share the center of the hero viewport,
+in portrait and landscape. Each text block travels gently from 26px below the
+center to 26px above it as its movement progresses. Reduced motion keeps it
+centered with opacity changes only. Desktop positions and all original images
+remain unchanged. Centered text now intentionally passes over the photograph,
+as requested.
 
-1. Put actual recordings in `assets/audio/`.
-2. In `story-audio.js`, replace the relevant `null` values with the commented
-   relative paths. Leave `silence` null. Da Capo can reuse `listening.mp3`.
-3. Reload the page. The localized, keyboard-accessible sound toggle appears
-   after the introduction and starts OFF. Only clicking it enables playback.
+### Included optional sound
+
+Seven original digital piano miniatures are included in `assets/audio/` and
+mapped in `story-audio.js`. They are synthesized specifically for this site,
+not Edoardo's performance recordings and not excerpts of existing compositions.
+See `assets/audio/README.md` for the musical concepts and provenance.
+
+The sound control appears after the introduction and starts OFF. Only an
+explicit click enables audio. A single gesture-unlocked Web Audio context
+supports later scroll-driven playback, with gain ramps for mobile browsers.
+No audio file is fetched or decoded before the visitor enables sound. Each
+movement loads its own MP3 on demand and caches the decoded audio for return
+visits during that page session.
 
 Playback occurs once per movement entry, with a six-second replay guard against
-boundary jitter. Moving out of a movement fades its sound. Navigation away,
-hiding the tab, and page exit stop playback and reset sound to OFF. Failed
-playback also resets the toggle. There are no generated or external audio files.
+boundary jitter. Leaving a movement fades its sound. Navigation away, hiding
+the tab, and page exit stop playback and reset sound to OFF. Failed playback
+also resets the toggle. Deferred loads cannot play after the visitor has moved
+on or muted. The existing SoundCloud embeds in Recordings are unchanged.
+
+To replace a miniature with Edoardo's recording, replace the corresponding
+MP3 or update its relative path in `story-audio.js`. The optional renderer at
+`tools/render-piano.py` regenerates the supplied scores using NumPy, SciPy and
+FFmpeg; these tools are not needed to host or run the site.
 
 ### Verification
 
@@ -92,5 +109,5 @@ the original, and check all seven movements at desktop, tablet, portrait phone,
 and landscape phone sizes. Check text against face, hands, signature, sheet music
 and keyboard, then repeat in Italian and Turkish. Test actual Safari/iOS toolbar
 resizing, menu/language clicks, reverse scroll, reduced motion, horizontal
-clipping, and clean end-of-sequence release. Real audio needs a listening test
-once recordings are supplied. No public deployment was performed.
+clipping, and clean end-of-sequence release. The included digital piano clips also need a final listening check on the
+target phone/browser; automated checks verify decoding, duration and levels. No public deployment was performed.

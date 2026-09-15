@@ -309,6 +309,7 @@ function applyMovement(m, el, t, velocity) {
   const visible = t > 0 && t < 1;
   el.style.visibility = visible ? 'visible' : 'hidden';
   el.setAttribute('aria-hidden', String(!visible));
+  if (compactScreen.matches) el.style.transform = `translate3d(0, ${prefersReducedMotion ? 0 : (0.5 - t) * 52}px, 0)`;
   if (m.id === 'resonance') {
     // Owns its own two-line opacity/letter-spacing timing; the wrapping
     // element itself is just an on/off gate for the (already-faded) label.
@@ -331,6 +332,8 @@ function applyMovement(m, el, t, velocity) {
     translateX += velocity * RUBATO_MAX_TRANSLATE * .4;
     extraLetterSpacing = velocity * RUBATO_MAX_LETTER_SPACING;
   }
+
+  if (compactScreen.matches) translateY = prefersReducedMotion ? 0 : (0.5 - t) * 52;
 
   if (m.id === 'cantabile' && !prefersReducedMotion) translateX = Math.sin(t * Math.PI) * (compactScreen.matches ? 2 : 6);
 
@@ -414,7 +417,7 @@ window.visualViewport?.addEventListener('resize', resizeStory, { passive: true }
 // fades back out the moment the visitor actually starts scrolling.
 const cueTimer = setTimeout(() => { cueReleased = true; requestTick(); }, 1800);
 
-// ---- Optional ambient sound: real, local recordings only ----------------
+// ---- Optional local piano audio; unlocked by a deliberate click ----------
 // Paths are configured separately in story-audio.js. No request is made until
 // a visitor explicitly enables sound. An empty configuration hides the control.
 const MOVEMENT_AUDIO = window.PIANO_STORY_AUDIO || {};
@@ -422,29 +425,45 @@ const hasAudio = Object.values(MOVEMENT_AUDIO).some(src => typeof src === 'strin
 let currentStoryMovement = null;
 let soundEnabled = false;
 let activeAudio = null;
+let audioContext = null;
+let audioRequest = 0;
 let playedMovement = null;
 const lastPlayedAt = new Map();
-const fadingAudio = new Map();
+const audioBuffers = new Map();
+const fadingAudio = new Set();
 const AUDIO_COOLDOWN_MS = 6000;
 
-function fadeOutAndStop(audio) {
-  if (!audio || fadingAudio.has(audio)) return;
-  const initialVolume = audio.volume;
-  const started = performance.now();
-  function step(now) {
-    const remaining = Math.max(0, 1 - (now - started) / 350);
-    audio.volume = initialVolume * remaining;
-    if (remaining > 0) fadingAudio.set(audio, requestAnimationFrame(step));
-    else { audio.pause(); fadingAudio.delete(audio); }
-  }
-  fadingAudio.set(audio, requestAnimationFrame(step));
+// One gesture-unlocked AudioContext supports subsequent scroll-triggered notes
+// on iOS. Gain ramps work there even when HTMLMediaElement.volume is ignored.
+function fadeOutAndStop(voice) {
+  if (!voice || fadingAudio.has(voice)) return;
+  const now = audioContext.currentTime;
+  voice.gain.gain.cancelScheduledValues(now);
+  voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
+  voice.gain.gain.linearRampToValueAtTime(0, now + .35);
+  voice.source.stop(now + .36);
+  fadingAudio.add(voice);
 }
 function stopMovementSound() {
+  audioRequest++;
   fadeOutAndStop(activeAudio);
   activeAudio = null;
   playedMovement = null;
 }
-function playMovementSound(id) {
+async function loadPianoBuffer(src) {
+  if (!audioBuffers.has(src)) {
+    const pending = fetch(src)
+      .then(response => {
+        if (!response.ok) throw new Error('Piano audio unavailable');
+        return response.arrayBuffer();
+      })
+      .then(bytes => audioContext.decodeAudioData(bytes));
+    audioBuffers.set(src, pending);
+    pending.catch(() => audioBuffers.delete(src));
+  }
+  return audioBuffers.get(src);
+}
+async function playMovementSound(id) {
   if (!soundEnabled || playedMovement === id || document.hidden || currentSection) return;
   const src = MOVEMENT_AUDIO[id];
   if (typeof src !== 'string' || !src.startsWith('assets/audio/')) return;
@@ -452,16 +471,32 @@ function playMovementSound(id) {
   if (now - (lastPlayedAt.get(id) ?? -Infinity) < AUDIO_COOLDOWN_MS) return;
   playedMovement = id;
   lastPlayedAt.set(id, now);
-  const audio = new Audio(src);
-  audio.volume = .75;
-  activeAudio = audio;
-  audio.play().catch(() => {
-    if (activeAudio !== audio) return;
+  const request = ++audioRequest;
+  try {
+    const buffer = await loadPianoBuffer(src);
+    if (request !== audioRequest || !soundEnabled || document.hidden || currentSection) return;
+    const source = audioContext.createBufferSource();
+    const gain = audioContext.createGain();
+    source.buffer = buffer;
+    gain.gain.setValueAtTime(.75, audioContext.currentTime);
+    source.connect(gain);
+    gain.connect(audioContext.destination);
+    const voice = { source, gain };
+    activeAudio = voice;
+    source.onended = () => {
+      source.disconnect(); gain.disconnect(); fadingAudio.delete(voice);
+      if (activeAudio === voice) activeAudio = null;
+    };
+    source.start();
+  } catch {
+    if (request !== audioRequest) return;
     soundEnabled = false;
+    lastPlayedAt.delete(id);
     stopMovementSound();
     updateSoundToggleLabel();
-  });
+  }
 }
+
 function updateSoundToggleLabel() {
   if (!soundToggle || !soundToggleLabel) return;
   const labels = copy[currentLang].story;
@@ -470,30 +505,42 @@ function updateSoundToggleLabel() {
   soundToggle.setAttribute('aria-pressed', String(soundEnabled));
   soundToggle.hidden = !hasAudio;
 }
-function toggleStorySound() {
+async function toggleStorySound() {
   if (!hasAudio) return;
   soundEnabled = !soundEnabled;
   updateSoundToggleLabel();
-  if (!soundEnabled) stopMovementSound();
-  else if (currentStoryMovement) playMovementSound(currentStoryMovement);
+  if (!soundEnabled) { stopMovementSound(); return; }
+  try {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    audioContext ||= new Context();
+    // resume() is invoked directly inside the trusted click handler.
+    await audioContext.resume();
+    if (soundEnabled && currentStoryMovement) playMovementSound(currentStoryMovement);
+  } catch {
+    soundEnabled = false;
+    updateSoundToggleLabel();
+  }
 }
 function suspendStory() {
   soundEnabled = false;
   stopMovementSound();
-  for (const [audio, frame] of fadingAudio) { cancelAnimationFrame(frame); audio.pause(); }
+  for (const voice of fadingAudio) { voice.source.stop(); voice.source.disconnect(); voice.gain.disconnect(); }
   fadingAudio.clear();
+  audioContext?.suspend().catch(() => {});
   currentStoryMovement = null;
   smoothVelocity = 0;
   if (rafId !== null) cancelAnimationFrame(rafId);
   rafId = null;
   updateSoundToggleLabel();
 }
+
 function visibilityChanged() {
   if (document.hidden) suspendStory();
   else resizeStory();
 }
 function destroyStory() {
   suspendStory();
+  audioContext?.close().catch(() => {});
   clearTimeout(cueTimer);
   window.removeEventListener('scroll', requestTick);
   window.removeEventListener('resize', resizeStory);
