@@ -141,6 +141,13 @@ button { font: inherit; }
     background-position: center 20%;
     filter: blur(38px) grayscale(65%) brightness(.75) contrast(1.05);
     opacity: 1;
+    /* This hero photo is wide enough that on most screens it only ever
+       letterboxes at the bottom (never the sides), so the misty backdrop
+       must stay confined to roughly where the photo itself sits -- pulled up
+       and flattened -- rather than the taller ellipse used for the portrait
+       mobile photo, or it shows through as a grey band under the picture. */
+    -webkit-mask-image: radial-gradient(ellipse 85% 42% at 50% 26%, black 60%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 42% at 50% 26%, black 60%, transparent 100%);
   }
 }
 .hero-shade {
