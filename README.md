@@ -63,10 +63,12 @@ as requested.
 
 ### Included optional sound
 
-Seven original digital piano miniatures are included in `assets/audio/` and
-mapped in `story-audio.js`. They are synthesized specifically for this site,
-not Edoardo's performance recordings and not excerpts of existing compositions.
-See `assets/audio/README.md` for the musical concepts and provenance.
+Seven consecutive excerpts from the user-supplied screen recording are included
+in `assets/audio/` and mapped in `story-audio.js`. The first 2.84 seconds of
+recording silence are omitted. Source time 2.84–62.84 seconds is divided into
+seven exact 378,000-sample sections at 44.1 kHz: 8.571428571 seconds each, 60
+seconds total. Only tiny edge fades are applied to prevent clicks. The former
+synthesized music is replaced. See `assets/audio/segments.json` for boundaries.
 
 The sound control appears after the introduction and starts OFF. Only an
 explicit click enables audio. A single gesture-unlocked Web Audio context
@@ -81,10 +83,9 @@ the tab, and page exit stop playback and reset sound to OFF. Failed playback
 also resets the toggle. Deferred loads cannot play after the visitor has moved
 on or muted. The existing SoundCloud embeds in Recordings are unchanged.
 
-To replace a miniature with Edoardo's recording, replace the corresponding
-MP3 or update its relative path in `story-audio.js`. The optional renderer at
-`tools/render-piano.py` regenerates the supplied scores using NumPy, SciPy and
-FFmpeg; these tools are not needed to host or run the site.
+To replace an excerpt, update its MP3 or the relative path in `story-audio.js`.
+Audio asset filenames and the configuration version were changed so browsers
+request the new recording instead of previously cached synthesized music.
 
 ### Verification
 
@@ -109,5 +110,5 @@ the original, and check all seven movements at desktop, tablet, portrait phone,
 and landscape phone sizes. Check text against face, hands, signature, sheet music
 and keyboard, then repeat in Italian and Turkish. Test actual Safari/iOS toolbar
 resizing, menu/language clicks, reverse scroll, reduced motion, horizontal
-clipping, and clean end-of-sequence release. The included digital piano clips also need a final listening check on the
+clipping, and clean end-of-sequence release. The included recording excerpts also need a final listening check on the
 target phone/browser; automated checks verify decoding, duration and levels. No public deployment was performed.

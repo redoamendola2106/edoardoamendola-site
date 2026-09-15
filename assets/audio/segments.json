@@ -1,0 +1,64 @@
+{
+  "source": "ScreenRecording_09-15-2026 12-38-37_1.mp3",
+  "leading_silence_removed_seconds": 2.84,
+  "sample_rate": 44100,
+  "samples_per_segment": 378000,
+  "segments": [
+    {
+      "movement": "silence",
+      "file": "recording-01.mp3",
+      "source_start": 2.84,
+      "source_end": 11.411429,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999983
+    },
+    {
+      "movement": "listening",
+      "file": "recording-02.mp3",
+      "source_start": 11.411429,
+      "source_end": 19.982857,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999984
+    },
+    {
+      "movement": "breath",
+      "file": "recording-03.mp3",
+      "source_start": 19.982857,
+      "source_end": 28.554286,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999988
+    },
+    {
+      "movement": "rubato",
+      "file": "recording-04.mp3",
+      "source_start": 28.554286,
+      "source_end": 37.125714,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999983
+    },
+    {
+      "movement": "cantabile",
+      "file": "recording-05.mp3",
+      "source_start": 37.125714,
+      "source_end": 45.697143,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999976
+    },
+    {
+      "movement": "resonance",
+      "file": "recording-06.mp3",
+      "source_start": 45.697143,
+      "source_end": 54.268571,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999725
+    },
+    {
+      "movement": "dacapo",
+      "file": "recording-07.mp3",
+      "source_start": 54.268571,
+      "source_end": 62.84,
+      "decoded_seconds": 8.571428571428571,
+      "correlation": 0.999827
+    }
+  ]
+}
