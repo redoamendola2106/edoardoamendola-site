@@ -37,7 +37,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&amp;family=Montserrat:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
-<link href="style.css?v=14" rel="stylesheet">
+<link href="style.css?v=15" rel="stylesheet">
 </link></head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -65,7 +65,10 @@
 <main>
 <section aria-label="Home" class="hero view active" id="home">
 <div class="hero-bg" aria-hidden="true"></div>
-<img alt="Edoardo Amendola playing piano" class="hero-image" src="assets/hero.png?v=11"/>
+<picture>
+<source media="(min-width: 821px)" srcset="assets/hero-desktop.png?v=1"/>
+<img alt="Edoardo Amendola playing piano" class="hero-image" src="assets/hero-mobile.png?v=1"/>
+</picture>
 </section>
 <section aria-live="polite" class="content-view view" id="contentView">
 <div aria-hidden="true" class="tile-reveal" id="tileReveal"></div>
@@ -81,6 +84,6 @@
 </article>
 </section>
 </main>
-<script src="script.js?v=2"></script>
+<script src="script.js?v=3"></script>
 </body>
 </html>

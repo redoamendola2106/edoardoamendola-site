@@ -112,7 +112,7 @@ button { font: inherit; }
 .hero-bg {
   position: absolute;
   inset: -15%;
-  background-image: url("assets/hero.png?v=9");
+  background-image: url("assets/hero-mobile.png?v=1");
   background-size: cover;
   background-position: center 30%;
   filter: blur(90px) grayscale(60%) brightness(.7) contrast(1.05);
@@ -180,6 +180,13 @@ button { font: inherit; }
 .tile-reveal.hidden span { transform: scale(0); opacity: 0; }
 
 .collage-wrap { position: relative; width: 100%; }
+@media (min-width: 821px) {
+  /* Capping the collage's width on desktop keeps its rendered height (and so
+     the minimum scroll before the text panel can safely clear the smiling
+     photo above it) from ballooning on wide monitors. The misty blur behind
+     it means the sides never look like bare empty space. */
+  .collage-wrap { max-width: 1200px; margin: 0 auto; }
+}
 .collage-image { display: block; width: 100%; height: auto; min-height: calc(100svh - var(--header-h)); object-fit: cover; }
 .collage-overlay {
   position: absolute;
